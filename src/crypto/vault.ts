@@ -27,7 +27,11 @@ export function readVault(vaultPath: string): VaultFile {
     throw new Error(`Vault file not found: ${resolved}`);
   }
   const raw = fs.readFileSync(resolved, 'utf-8');
-  return JSON.parse(raw) as VaultFile;
+  try {
+    return JSON.parse(raw) as VaultFile;
+  } catch {
+    throw new Error(`Vault file is corrupted or not valid JSON: ${resolved}`);
+  }
 }
 
 export function writeVault(vaultPath: string, vault: VaultFile): void {
