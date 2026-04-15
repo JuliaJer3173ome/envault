@@ -1,23 +1,27 @@
-#!/usr/bin/env node
 import { Command } from 'commander';
 import { registerInitCommand } from './commands/init';
-
-const pkg = require('../../package.json');
+import { registerSetCommand } from './commands/set';
+import { registerGetCommand } from './commands/get';
+import { registerListCommand } from './commands/list';
+import { registerDeleteCommand } from './commands/delete';
+import { registerExportCommand } from './commands/export';
+import { registerImportCommand } from './commands/import';
+import { registerRotateCommand } from './commands/rotate';
 
 const program = new Command();
 
 program
   .name('envault')
-  .description('Securely manage and share .env files across teams using encrypted vaults')
-  .version(pkg.version ?? '0.1.0');
+  .description('Securely manage and share .env files using encrypted vaults')
+  .version('1.0.0');
 
 registerInitCommand(program);
+registerSetCommand(program);
+registerGetCommand(program);
+registerListCommand(program);
+registerDeleteCommand(program);
+registerExportCommand(program);
+registerImportCommand(program);
+registerRotateCommand(program);
 
-program.parseAsync(process.argv).catch((err: Error) => {
-  if ((err as any).code === 'commander.helpDisplayed' ||
-      (err as any).code === 'commander.version') {
-    process.exit(0);
-  }
-  console.error('Error:', err.message);
-  process.exit(1);
-});
+program.parse(process.argv);
