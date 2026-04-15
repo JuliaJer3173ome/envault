@@ -30,6 +30,7 @@ export function registerMoveCommand(program: Command): void {
     .description('Move (rename) an environment variable to a new key, removing the original')
     .option('-f, --file <path>', 'Path to vault file', '.envault')
     .option('-p, --password <password>', 'Vault password')
+    .option('--overwrite', 'Overwrite destination key if it already exists')
     .action(async (source: string, destination: string, options) => {
       try {
         const password = options.password ?? (await promptPassword('Enter vault password: '));
@@ -40,8 +41,8 @@ export function registerMoveCommand(program: Command): void {
           process.exit(1);
         }
 
-        if (destination in vault.secrets) {
-          console.error(`Error: Key "${destination}" already exists. Use rename to overwrite.`);
+        if (destination in vault.secrets && !options.overwrite) {
+          console.error(`Error: Key "${destination}" already exists. Use --overwrite to replace it.`);
           process.exit(1);
         }
 
