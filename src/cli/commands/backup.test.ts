@@ -23,6 +23,11 @@ describe('getBackupPath', () => {
     const result = getBackupPath('/some/dir/my.vault', 'pre-release');
     expect(result).toMatch(/my\.backup-pre-release-.*\.vault$/);
   });
+
+  it('places backup in the same directory as the source vault', () => {
+    const result = getBackupPath('/some/dir/my.vault');
+    expect(result).toMatch(/^\/some\/dir\//);
+  });
 });
 
 describe('backup command', () => {
