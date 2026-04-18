@@ -46,6 +46,8 @@ import { registerCountCommand } from './count';
 import { registerKeysCommand } from './keys';
 import { registerResolveCommand } from './resolve';
 import { registerReloadCommand } from './reload';
+import { registerChecksumCommand } from './checksum';
+import { registerExpireCommand } from './expire';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -95,4 +97,6 @@ export function registerAllCommands(program: Command): void {
   registerKeysCommand(program);
   registerResolveCommand(program);
   registerReloadCommand(program);
+  registerChecksumCommand(program);
+  registerExpireCommand(program);
 }
