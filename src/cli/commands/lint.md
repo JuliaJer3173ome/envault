@@ -5,7 +5,7 @@ Lint vault entries for common issues such as invalid key names, empty values, or
 ## Usage
 
 ```bash
-envault lint <vault> --password <password> [--strict]
+envault lint <vault> --password <password> [--strict] [--format <format>]
 ```
 
 ## Arguments
@@ -20,6 +20,7 @@ envault lint <vault> --password <password> [--strict]
 |--------|-------------|
 | `-p, --password` | Vault password |
 | `--strict` | Exit with non-zero code on warnings (in addition to errors) |
+| `--format` | Output format: `text` (default) or `json` |
 
 ## Rules
 
@@ -39,6 +40,9 @@ envault lint .env.vault --password mysecret
 
 # Lint with strict mode (warnings also cause non-zero exit)
 envault lint .env.vault --password mysecret --strict
+
+# Output results as JSON (useful for CI pipelines or tooling)
+envault lint .env.vault --password mysecret --format json
 ```
 
 ## Exit Codes
