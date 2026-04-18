@@ -23,6 +23,7 @@ import { registerLockCommand } from './lock';
 import { registerCompareCommand } from './compare';
 import { registerCloneCommand } from './clone';
 import { registerStatsCommand } from './stats';
+import { registerTtlCommand } from './ttl';
 import { registerEnvCommand } from './env';
 import { registerFmtCommand } from './fmt';
 import { registerWatchCommand } from './watch';
@@ -39,8 +40,12 @@ import { registerPasswdCommand } from './passwd';
 import { registerSnapshotCommand } from './snapshot';
 import { registerTouchCommand } from './touch';
 import { registerRandomizeCommand } from './randomize';
-import { registerTtlCommand } from './ttl';
 import { registerGrepCommand } from './grep';
+import { registerGenerateCommand } from './generate';
+import { registerCountCommand } from './count';
+import { registerKeysCommand } from './keys';
+import { registerResolveCommand } from './resolve';
+import { registerReloadCommand } from './reload';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -67,6 +72,7 @@ export function registerAllCommands(program: Command): void {
   registerCompareCommand(program);
   registerCloneCommand(program);
   registerStatsCommand(program);
+  registerTtlCommand(program);
   registerEnvCommand(program);
   registerFmtCommand(program);
   registerWatchCommand(program);
@@ -83,6 +89,10 @@ export function registerAllCommands(program: Command): void {
   registerSnapshotCommand(program);
   registerTouchCommand(program);
   registerRandomizeCommand(program);
-  registerTtlCommand(program);
   registerGrepCommand(program);
+  registerGenerateCommand(program);
+  registerCountCommand(program);
+  registerKeysCommand(program);
+  registerResolveCommand(program);
+  registerReloadCommand(program);
 }
