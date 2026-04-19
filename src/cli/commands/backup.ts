@@ -22,6 +22,21 @@ export function getBackupPath(vaultPath: string, label?: string): string {
   return path.join(dir, `${base}.backup-${suffix}.vault`);
 }
 
+/**
+ * Lists all backup files associated with a given vault path.
+ * Backups are identified by the `.backup-` infix in the filename.
+ */
+export function listBackups(vaultPath: string): string[] {
+  const dir = path.dirname(vaultPath);
+  const base = path.basename(vaultPath, '.vault');
+  const prefix = `${base}.backup-`;
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.startsWith(prefix) && f.endsWith('.vault'))
+    .map((f) => path.join(dir, f))
+    .sort();
+}
+
 export function registerBackupCommand(program: Command): void {
   program
     .command('backup <vault>')
