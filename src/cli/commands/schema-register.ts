@@ -48,6 +48,7 @@ import { registerResolveCommand } from './resolve';
 import { registerReloadCommand } from './reload';
 import { registerChecksumCommand } from './checksum';
 import { registerExpireCommand } from './expire';
+import { registerTruncateCommand } from './truncate';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -99,4 +100,5 @@ export function registerAllCommands(program: Command): void {
   registerReloadCommand(program);
   registerChecksumCommand(program);
   registerExpireCommand(program);
+  registerTruncateCommand(program);
 }
