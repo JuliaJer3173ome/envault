@@ -61,4 +61,14 @@ describe('move command', () => {
 
     expect(console.error).toHaveBeenCalledWith('Error: Decryption failed');
   });
+
+  it('does not call updateVault if source key is missing', async () => {
+    mockOpenVault.mockResolvedValue({ secrets: {} } as any);
+
+    await expect(
+      buildProgram().parseAsync(['move', 'MISSING', 'NEW_KEY', '-p', 'secret'], { from: 'user' })
+    ).rejects.toThrow('exit:1');
+
+    expect(mockUpdateVault).not.toHaveBeenCalled();
+  });
 });
