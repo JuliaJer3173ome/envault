@@ -49,6 +49,12 @@ import { registerReloadCommand } from './reload';
 import { registerChecksumCommand } from './checksum';
 import { registerExpireCommand } from './expire';
 import { registerTruncateCommand } from './truncate';
+import { registerTrimCommand } from './trim';
+import { registerHeadCommand } from './head';
+import { registerTailCommand } from './tail';
+import { registerCatCommand } from './cat';
+import { registerFlattenCommand } from './flatten';
+import { registerPlaceholderCommand } from './placeholder';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -101,4 +107,10 @@ export function registerAllCommands(program: Command): void {
   registerChecksumCommand(program);
   registerExpireCommand(program);
   registerTruncateCommand(program);
+  registerTrimCommand(program);
+  registerHeadCommand(program);
+  registerTailCommand(program);
+  registerCatCommand(program);
+  registerFlattenCommand(program);
+  registerPlaceholderCommand(program);
 }
