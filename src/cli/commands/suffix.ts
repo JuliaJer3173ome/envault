@@ -1,20 +1,17 @@
 import { Command } from 'commander';
-import { openVault, writeVault } from '../../crypto/vault';
+import { openVault, updateVault } from '../../crypto/vault';
 
-/**
- * Appends a suffix to all keys (or filtered keys) in a vault.
- */
 export function suffixEntries(
   entries: Record<string, string>,
   suffix: string,
-  filter?: string
+  keys?: string[]
 ): Record<string, string> {
   const result: Record<string, string> = {};
-  for (const [key, value] of Object.entries(entries)) {
-    if (filter && !key.includes(filter)) {
-      result[key] = value;
+  for (const [k, v] of Object.entries(entries)) {
+    if (!keys || keys.includes(k)) {
+      result[k] = v + suffix;
     } else {
-      result[`${key}${suffix}`] = value;
+      result[k] = v;
     }
   }
   return result;
@@ -23,63 +20,21 @@ export function suffixEntries(
 export function registerSuffixCommand(program: Command): void {
   program
     .command('suffix <vault> <suffix>')
-    .description('Append a suffix to all keys in a vault')
-    .option('-p, --password <password>', 'Vault password')
-    .option('-f, --filter <substring>', 'Only rename keys containing this substring')
-    .option('--dry-run', 'Preview changes without saving')
-    .action(async (vaultPath: string, suffix: string, options) => {
+    .description('Append a suffix to values in the vault')
+    .requiredOption('-p, --password <password>', 'Vault password')
+    .option('-k, --keys <keys>', 'Comma-separated list of keys to suffix (default: all)')
+    .action(async (vaultPath: string, suffix: string, options: { password: string; keys?: string }) => {
       try {
-        const password = options.password;
-        if (!password) {
-          console.error('Error: password is required (--password)');
-          process.exit(1);
-        }
-
-        if (!suffix) {
-          console.error('Error: suffix cannot be empty');
-          process.exit(1);
-        }
-
-        const vault = await openVault(vaultPath, password);
-        const original = vault.entries as Record<string, string>;
-        const updated = suffixEntries(original, suffix, options.filter);
-
-        const added: string[] = [];
-        const removed: string[] = [];
-
-        for (const key of Object.keys(original)) {
-          const newKey = options.filter && !key.includes(options.filter)
-            ? key
-            : `${key}${suffix}`;
-          if (newKey !== key) {
-            removed.push(key);
-            added.push(newKey);
-          }
-        }
-
-        if (added.length === 0) {
-          console.log('No keys matched. Nothing to rename.');
-          return;
-        }
-
-        if (options.dryRun) {
-          console.log('Dry run — no changes saved:\n');
-          for (let i = 0; i < added.length; i++) {
-            console.log(`  ${removed[i]}  →  ${added[i]}`);
-          }
-          return;
-        }
-
-        vault.entries = updated;
-        await writeVault(vaultPath, vault, password);
-
-        console.log(`Renamed ${added.length} key(s) with suffix "${suffix}":`);
-        for (let i = 0; i < added.length; i++) {
-          console.log(`  ${removed[i]}  →  ${added[i]}`);
-        }
+        const entries = await openVault(vaultPath, options.password);
+        const keys = options.keys ? options.keys.split(',').map((k) => k.trim()) : undefined;
+        const updated = suffixEntries(entries, suffix, keys);
+        await updateVault(vaultPath, updated, options.password);
+        const count = Object.keys(updated).filter(
+          (k) => !keys || keys.includes(k)
+        ).length;
+        console.log(`Appended suffix "${suffix}" to ${count} value(s) in ${vaultPath}`);
       } catch (err: any) {
-        console.error('Error:', err.message);
-        process.exit(1);
+        console.error(`Error: ${err.message}`);
       }
     });
 }
