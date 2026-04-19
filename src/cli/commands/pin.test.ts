@@ -24,6 +24,12 @@ describe('pinVault', () => {
     pinVault('myapp', '/home/user/myapp.vault');
     expect(fs.writeFileSync).toHaveBeenCalled();
   });
+
+  it('overwrites an existing alias', () => {
+    pinVault('myapp', '/home/user/myapp.vault');
+    pinVault('myapp', '/home/user/other.vault');
+    expect(resolveAlias('myapp')).toBe('/home/user/other.vault');
+  });
 });
 
 describe('unpinVault', () => {
@@ -54,5 +60,12 @@ describe('readPins', () => {
   it('returns empty object when file does not exist', () => {
     vi.mocked(fs.existsSync).mockReturnValueOnce(false);
     expect(readPins()).toEqual({});
+  });
+
+  it('returns all pinned aliases', () => {
+    vi.mocked(fs.readFileSync).mockReturnValueOnce(
+      JSON.stringify({ app1: '/path/one', app2: '/path/two' })
+    );
+    expect(readPins()).toEqual({ app1: '/path/one', app2: '/path/two' });
   });
 });
