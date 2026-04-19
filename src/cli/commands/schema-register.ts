@@ -55,6 +55,9 @@ import { registerTailCommand } from './tail';
 import { registerCatCommand } from './cat';
 import { registerFlattenCommand } from './flatten';
 import { registerPlaceholderCommand } from './placeholder';
+import { registerSanitizeCommand } from './sanitize';
+import { registerUppercaseCommand } from './uppercase';
+import { registerSortCommand } from './sort';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -113,4 +116,7 @@ export function registerAllCommands(program: Command): void {
   registerCatCommand(program);
   registerFlattenCommand(program);
   registerPlaceholderCommand(program);
+  registerSanitizeCommand(program);
+  registerUppercaseCommand(program);
+  registerSortCommand(program);
 }
