@@ -23,6 +23,18 @@ export function truncateEntries(
   return result;
 }
 
+/**
+ * Returns keys that exist in entries and keys that do not.
+ */
+export function partitionKeys(
+  entries: Record<string, string>,
+  keys: string[]
+): { found: string[]; missing: string[] } {
+  const found = keys.filter((k) => k in entries);
+  const missing = keys.filter((k) => !(k in entries));
+  return { found, missing };
+}
+
 export function registerTruncateCommand(program: Command): void {
   program
     .command('truncate <vault> <keys...>')
@@ -33,11 +45,10 @@ export function registerTruncateCommand(program: Command): void {
       try {
         const password = opts.password ?? (await promptPassword('Password: '));
         const vault = await openVault(vaultPath, password);
-        const missing = keys.filter((k) => !(k in vault.entries));
+        const { found: toRemove, missing } = partitionKeys(vault.entries, keys);
         if (missing.length > 0) {
           console.warn(`Warning: keys not found: ${missing.join(', ')}`);
         }
-        const toRemove = keys.filter((k) => k in vault.entries);
         if (toRemove.length === 0) {
           console.log('No matching keys to remove.');
           return;
