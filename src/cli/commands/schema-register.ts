@@ -58,6 +58,14 @@ import { registerPlaceholderCommand } from './placeholder';
 import { registerSanitizeCommand } from './sanitize';
 import { registerUppercaseCommand } from './uppercase';
 import { registerSortCommand } from './sort';
+import { registerMaskCommand } from './mask';
+import { registerUniqueCommand } from './unique';
+import { registerPrefixCommand } from './prefix';
+import { registerSuffixCommand } from './suffix';
+import { registerNamespaceCommand } from './namespace';
+import { registerRedactCommand } from './redact';
+import { registerEncodeCommand } from './encode';
+import { registerExtractCommand } from './extract';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -119,4 +127,12 @@ export function registerAllCommands(program: Command): void {
   registerSanitizeCommand(program);
   registerUppercaseCommand(program);
   registerSortCommand(program);
+  registerMaskCommand(program);
+  registerUniqueCommand(program);
+  registerPrefixCommand(program);
+  registerSuffixCommand(program);
+  registerNamespaceCommand(program);
+  registerRedactCommand(program);
+  registerEncodeCommand(program);
+  registerExtractCommand(program);
 }
