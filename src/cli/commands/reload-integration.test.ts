@@ -15,6 +15,21 @@ function buildProgram() {
   return program;
 }
 
+/**
+ * Captures console.log output during the execution of a callback,
+ * then restores the original implementation.
+ */
+async function captureLog(fn: () => Promise<void>): Promise<string> {
+  const out: string[] = [];
+  jest.spyOn(console, 'log').mockImplementation((...args) => out.push(args.join(' ')));
+  try {
+    await fn();
+  } finally {
+    (console.log as jest.Mock).mockRestore();
+  }
+  return out.join('');
+}
+
 describe('reload integration', () => {
   let tmpDir: string;
   let vaultPath: string;
@@ -33,11 +48,10 @@ describe('reload integration', () => {
     await program.parseAsync(['node', 'test', 'init', vaultPath, '-p', 'secret']);
     fs.writeFileSync(envPath, 'RELOAD_KEY=reloaded_value\n');
     await program.parseAsync(['node', 'test', 'reload', vaultPath, envPath, '-p', 'secret']);
-    const out: string[] = [];
-    jest.spyOn(console, 'log').mockImplementation((...args) => out.push(args.join(' ')));
-    await program.parseAsync(['node', 'test', 'get', vaultPath, 'RELOAD_KEY', '-p', 'secret']);
-    expect(out.join('')).toContain('reloaded_value');
-    (console.log as jest.Mock).mockRestore();
+    const output = await captureLog(() =>
+      program.parseAsync(['node', 'test', 'get', vaultPath, 'RELOAD_KEY', '-p', 'secret'])
+    );
+    expect(output).toContain('reloaded_value');
   });
 
   it('does not overwrite existing keys without --overwrite flag', async () => {
@@ -48,10 +62,9 @@ describe('reload integration', () => {
     await p2.parseAsync(['node', 'test', 'set', vaultPath, 'KEY', 'original', '-p', 'secret']);
     fs.writeFileSync(envPath, 'KEY=overwritten\n');
     await p2.parseAsync(['node', 'test', 'reload', vaultPath, envPath, '-p', 'secret']);
-    const out: string[] = [];
-    jest.spyOn(console, 'log').mockImplementation((...args) => out.push(args.join(' ')));
-    await p2.parseAsync(['node', 'test', 'get', vaultPath, 'KEY', '-p', 'secret']);
-    expect(out.join('')).toContain('original');
-    (console.log as jest.Mock).mockRestore();
+    const output = await captureLog(() =>
+      p2.parseAsync(['node', 'test', 'get', vaultPath, 'KEY', '-p', 'secret'])
+    );
+    expect(output).toContain('original');
   });
 });
