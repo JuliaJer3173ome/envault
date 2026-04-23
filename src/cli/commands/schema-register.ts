@@ -66,6 +66,21 @@ import { registerNamespaceCommand } from './namespace';
 import { registerRedactCommand } from './redact';
 import { registerEncodeCommand } from './encode';
 import { registerExtractCommand } from './extract';
+import { registerDefaultCommand } from './default';
+import { registerReverseCommand } from './reverse';
+import { registerSliceCommand } from './slice';
+import { registerSwapCommand } from './swap';
+import { registerPatchCommand } from './patch';
+import { registerCastCommand } from './cast';
+import { registerIntersectCommand } from './intersect';
+import { registerSubtractCommand } from './subtract';
+import { registerLowercaseCommand } from './lowercase';
+import { registerFilterCommand } from './filter';
+import { registerRenameKeyCommand } from './rename-key';
+import { registerPluckCommand } from './pluck';
+import { registerOmitCommand } from './omit';
+import { registerInjectCommand } from './inject';
+import { registerValidateCommand } from './validate';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -135,4 +150,19 @@ export function registerAllCommands(program: Command): void {
   registerRedactCommand(program);
   registerEncodeCommand(program);
   registerExtractCommand(program);
+  registerDefaultCommand(program);
+  registerReverseCommand(program);
+  registerSliceCommand(program);
+  registerSwapCommand(program);
+  registerPatchCommand(program);
+  registerCastCommand(program);
+  registerIntersectCommand(program);
+  registerSubtractCommand(program);
+  registerLowercaseCommand(program);
+  registerFilterCommand(program);
+  registerRenameKeyCommand(program);
+  registerPluckCommand(program);
+  registerOmitCommand(program);
+  registerInjectCommand(program);
+  registerValidateCommand(program);
 }
