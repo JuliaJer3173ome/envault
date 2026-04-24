@@ -11,6 +11,12 @@ export interface VaultInfo {
   sizeBytes: number;
 }
 
+/**
+ * Retrieves metadata about a vault file without decrypting its contents.
+ * @param vaultPath - Absolute or relative path to the vault file.
+ * @returns A {@link VaultInfo} object containing vault metadata.
+ * @throws If the vault file does not exist at the resolved path.
+ */
 export function getVaultInfo(vaultPath: string): VaultInfo {
   const resolvedPath = path.resolve(vaultPath);
 
@@ -30,6 +36,21 @@ export function getVaultInfo(vaultPath: string): VaultInfo {
   };
 }
 
+/**
+ * Formats a {@link VaultInfo} object into a human-readable string.
+ */
+function formatVaultInfo(info: VaultInfo): string {
+  return [
+    'Vault Information',
+    '-----------------',
+    `Path:       ${info.path}`,
+    `Keys:       ${info.keyCount}`,
+    `Created:    ${info.createdAt}`,
+    `Updated:    ${info.updatedAt}`,
+    `Size:       ${info.sizeBytes} bytes`,
+  ].join('\n');
+}
+
 export function registerInfoCommand(program: Command): void {
   program
     .command('info')
@@ -38,14 +59,7 @@ export function registerInfoCommand(program: Command): void {
     .action((options) => {
       try {
         const info = getVaultInfo(options.vault);
-
-        console.log('Vault Information');
-        console.log('-----------------');
-        console.log(`Path:       ${info.path}`);
-        console.log(`Keys:       ${info.keyCount}`);
-        console.log(`Created:    ${info.createdAt}`);
-        console.log(`Updated:    ${info.updatedAt}`);
-        console.log(`Size:       ${info.sizeBytes} bytes`);
+        console.log(formatVaultInfo(info));
       } catch (err: any) {
         console.error(`Error: ${err.message}`);
         process.exit(1);
