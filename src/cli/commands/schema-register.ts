@@ -81,6 +81,11 @@ import { registerPluckCommand } from './pluck';
 import { registerOmitCommand } from './omit';
 import { registerInjectCommand } from './inject';
 import { registerValidateCommand } from './validate';
+import { registerTransformCommand } from './transform';
+import { registerFreezeCommand } from './freeze';
+import { registerGroupCommand } from './group';
+import { registerRenameValueCommand } from './rename-value';
+import { registerAliasCommand } from './alias';
 
 export function registerAllCommands(program: Command): void {
   registerInitCommand(program);
@@ -165,4 +170,9 @@ export function registerAllCommands(program: Command): void {
   registerOmitCommand(program);
   registerInjectCommand(program);
   registerValidateCommand(program);
+  registerTransformCommand(program);
+  registerFreezeCommand(program);
+  registerGroupCommand(program);
+  registerRenameValueCommand(program);
+  registerAliasCommand(program);
 }
