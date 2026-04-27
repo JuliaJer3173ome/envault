@@ -32,6 +32,25 @@ async function captureConsoleLogs(fn: () => Promise<void>): Promise<string[]> {
   return logs;
 }
 
+/**
+ * Creates a temporary vault directory, initializes it, and populates it with
+ * the given key-value pairs using the provided password.
+ * Returns the path to the created vault file.
+ */
+async function createPopulatedVault(
+  program: Command,
+  dir: string,
+  password: string,
+  entries: Array<[string, string]>
+): Promise<string> {
+  const vaultPath = path.join(dir, 'test.ev');
+  await program.parseAsync(['node', 'test', 'init', vaultPath, '-p', password]);
+  for (const [key, value] of entries) {
+    await program.parseAsync(['node', 'test', 'set', vaultPath, key, value, '-p', password]);
+  }
+  return vaultPath;
+}
+
 describe('tail integration', () => {
   const tempDirs: string[] = [];
 
@@ -45,13 +64,13 @@ describe('tail integration', () => {
   it('tails entries from a real vault', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'envault-tail-'));
     tempDirs.push(dir);
-    const vaultPath = path.join(dir, 'test.ev');
     const program = buildProgram();
 
-    await program.parseAsync(['node', 'test', 'init', vaultPath, '-p', 'secret']);
-    await program.parseAsync(['node', 'test', 'set', vaultPath, 'FIRST', 'aaa', '-p', 'secret']);
-    await program.parseAsync(['node', 'test', 'set', vaultPath, 'SECOND', 'bbb', '-p', 'secret']);
-    await program.parseAsync(['node', 'test', 'set', vaultPath, 'THIRD', 'ccc', '-p', 'secret']);
+    const vaultPath = await createPopulatedVault(program, dir, 'secret', [
+      ['FIRST', 'aaa'],
+      ['SECOND', 'bbb'],
+      ['THIRD', 'ccc'],
+    ]);
 
     const logs = await captureConsoleLogs(() =>
       program.parseAsync(['node', 'test', 'tail', vaultPath, '-n', '2', '-p', 'secret'])
